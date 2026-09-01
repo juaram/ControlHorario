@@ -29,7 +29,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-gradient-to-br from-slate-900 via-blue-950 to-indigo-950">
+    <div className="min-h-screen flex items-center justify-center p-6 bg-linear-to-br from-slate-900 via-blue-950 to-indigo-950">
       <div className="w-full max-w-sm bg-white rounded-2xl p-10 shadow-2xl">
         <h2 className="text-2xl font-bold text-slate-900">Control Horario</h2>
         <p className="text-sm text-slate-500 mt-1 mb-6">Registro de jornada laboral</p>

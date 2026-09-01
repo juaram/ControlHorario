@@ -114,7 +114,7 @@ npm run build:prod    # typecheck + build + genera el desplegable en HOSTALIA/
 
 ## API (mismo contrato que la app Node original)
 
-- `POST /api/auth/login`, `GET /api/auth/me`, `POST /api/auth/register` (admin)
+- `POST /api/auth/login`, `GET /api/auth/me`, `POST /api/auth/register` (admin), `POST /api/auth/change-password` (sin contraseña anterior si el admin marcó el cambio forzado)
 - `GET /api/clock/status`, `POST /api/clock/clock-in|clock-out|break-start|break-end|notes` (entrada/salida aceptan `lat`,`lon`,`accuracy` y se validan contra la ubicación del puesto si está activa)
 - `GET /api/clock/history`, `GET /api/clock/today`
 - `GET /api/admin/users`, `POST /api/admin/users/{id}` (editar; POST y no PUT porque los hostings compartidos rechazan PUT en PHP), `GET /api/admin/records`, `POST /api/admin/records/{id}` (corregir registro: fecha, entrada/salida, pausas y notas; recalcula el total)

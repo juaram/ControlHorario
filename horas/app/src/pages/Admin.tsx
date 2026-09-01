@@ -304,7 +304,14 @@ export default function Admin() {
                 ) : (
                   usuarios.map((u) => (
                     <tr key={u.id} className="border-b border-slate-200 hover:bg-slate-50">
-                      <td className="px-3 py-2.5">{u.full_name}</td>
+                      <td className="px-3 py-2.5">
+                        {u.full_name}
+                        {Boolean(u.must_change_password) && (
+                          <span className="ml-2 inline-block text-[11px] font-medium text-orange-700 bg-orange-100 rounded-full px-2 py-0.5 align-middle">
+                            Cambio pendiente
+                          </span>
+                        )}
+                      </td>
                       <td className="px-3 py-2.5">{u.username}</td>
                       <td className="px-3 py-2.5">
                         <span
@@ -694,6 +701,7 @@ function ModalUsuario({
   const [email, setEmail] = useState(usuario?.email ?? '');
   const [role, setRole] = useState<Usuario['role']>(usuario?.role ?? 'employee');
   const [active, setActive] = useState(usuario ? usuario.active === 1 : true);
+  const [mustChange, setMustChange] = useState(usuario ? Boolean(usuario.must_change_password) : false);
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [enviando, setEnviando] = useState(false);
@@ -707,7 +715,7 @@ function ModalUsuario({
     setEnviando(true);
     try {
       if (usuario) {
-        const datos: Record<string, unknown> = { full_name: fullName.trim(), email, role, active };
+        const datos: Record<string, unknown> = { full_name: fullName.trim(), email, role, active, must_change_password: mustChange };
         if (password) datos.password = password;
         await api.admin.updateUser(usuario.id, datos);
       } else {
@@ -721,6 +729,7 @@ function ModalUsuario({
           full_name: fullName.trim(),
           email: email || undefined,
           role,
+          must_change_password: mustChange,
         });
       }
       onGuardado();
@@ -800,6 +809,22 @@ function ModalUsuario({
                 Usuario activo
               </label>
             </div>
+          </div>
+          <div>
+            <label className="flex items-start gap-2 text-sm text-slate-700 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={mustChange}
+                onChange={(e) => setMustChange(e.target.checked)}
+                className="w-4 h-4 mt-0.5"
+              />
+              <span>
+                Obligar a cambiar la contraseña en el próximo acceso
+                <span className="block text-xs text-slate-400 font-normal">
+                  El usuario no necesitará introducir la contraseña anterior.
+                </span>
+              </span>
+            </label>
           </div>
           <div>
             <label className="block text-sm font-medium text-slate-600 mb-1">

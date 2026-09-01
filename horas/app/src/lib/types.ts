@@ -5,6 +5,7 @@ export interface UsuarioSesion {
   username: string;
   full_name: string;
   role: Rol;
+  must_change_password: boolean;
 }
 
 export interface Usuario extends UsuarioSesion {

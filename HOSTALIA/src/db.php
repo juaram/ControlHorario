@@ -36,6 +36,7 @@ function initSchema(PDO $pdo): void
             email TEXT,
             role TEXT NOT NULL DEFAULT 'employee' CHECK(role IN ('admin','employee')),
             active INTEGER NOT NULL DEFAULT 1,
+            must_change_password INTEGER NOT NULL DEFAULT 0,
             created_at TEXT NOT NULL DEFAULT (datetime('now','localtime'))
         )"
     );
@@ -88,6 +89,12 @@ function initSchema(PDO $pdo): void
             $tipo = in_array($columna, ['lat', 'lon', 'accuracy_m', 'distance_m'], true) ? ' TEXT' : ' TEXT';
             $pdo->exec('ALTER TABLE ' . T_CLOCK . ' ADD COLUMN ' . $columna . $tipo);
         }
+    }
+
+    // Migración: obligar a cambiar la contraseña (BD ya existentes)
+    $colsUsers = $pdo->query('PRAGMA table_info(' . T_USERS . ')')->fetchAll(PDO::FETCH_COLUMN, 1);
+    if (!in_array('must_change_password', $colsUsers, true)) {
+        $pdo->exec('ALTER TABLE ' . T_USERS . ' ADD COLUMN must_change_password INTEGER NOT NULL DEFAULT 0');
     }
 
     // Usuario admin inicial (solo si no existe ya)

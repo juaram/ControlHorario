@@ -82,8 +82,16 @@ class ApiClient {
     login: (username: string, password: string) =>
       this.post<{ token: string; user: UsuarioSesion }>('/auth/login', { username, password }),
     me: () => this.get<{ user: UsuarioSesion }>('/auth/me'),
-    register: (d: { username: string; password: string; full_name: string; email?: string; role: string }) =>
-      this.post<{ message: string }>('/auth/register', d),
+    register: (d: {
+      username: string;
+      password: string;
+      full_name: string;
+      email?: string;
+      role: string;
+      must_change_password?: boolean;
+    }) => this.post<{ message: string }>('/auth/register', d),
+    changePassword: (d: { new_password: string; old_password?: string }) =>
+      this.post<{ message: string; user: UsuarioSesion }>('/auth/change-password', d),
   };
 
   clock = {

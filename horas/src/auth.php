@@ -96,7 +96,7 @@ function autenticar(): array
     }
 
     $user = dbFetch(
-        'SELECT id, username, full_name, role FROM ' . T_USERS . ' WHERE id = ? AND active = 1',
+        'SELECT id, username, full_name, role, must_change_password FROM ' . T_USERS . ' WHERE id = ? AND active = 1',
         [(int)$payload['id']]
     );
     if (!$user) {

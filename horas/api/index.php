@@ -30,9 +30,10 @@ $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 
 // 2. Rutas estáticas
 $rutas = [
-    'POST /api/auth/login'      => ['AuthController', 'login'],
-    'GET /api/auth/me'          => ['AuthController', 'me'],
-    'POST /api/auth/register'   => ['AuthController', 'register'],
+    'POST /api/auth/login'          => ['AuthController', 'login'],
+    'GET /api/auth/me'              => ['AuthController', 'me'],
+    'POST /api/auth/register'       => ['AuthController', 'register'],
+    'POST /api/auth/change-password' => ['AuthController', 'changePassword'],
 
     'GET /api/clock/status'     => ['ClockController', 'status'],
     'POST /api/clock/clock-in'  => ['ClockController', 'clockIn'],

@@ -266,7 +266,7 @@ export default function Dashboard() {
                     <td className="px-3 py-2.5">{r.clock_in || '--'}</td>
                     <td className="px-3 py-2.5">{r.clock_out || '--'}</td>
                     <td className="px-3 py-2.5">{duraccionTexto(r)}</td>
-                    <td className="px-3 py-2.5 text-xs text-slate-500 max-w-[200px] truncate">
+                    <td className="px-3 py-2.5 text-xs text-slate-500 max-w-50 truncate">
                       {r.notes || ''}
                     </td>
                   </tr>

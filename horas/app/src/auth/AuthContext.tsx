@@ -7,6 +7,7 @@ interface AuthContexto {
   loading: boolean;
   login: (username: string, password: string) => Promise<void>;
   logout: () => void;
+  cambiarPassword: (nueva: string, anterior?: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContexto | null>(null);
@@ -42,9 +43,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   }, []);
 
+  const cambiarPassword = useCallback(async (nueva: string, anterior?: string) => {
+    const data = await api.auth.changePassword({ new_password: nueva, old_password: anterior });
+    setUser(data.user); // must_change_password vuelve a false → la app desbloquea las rutas
+  }, []);
+
   const value = useMemo(
-    () => ({ user, loading, login, logout }),
-    [user, loading, login, logout]
+    () => ({ user, loading, login, logout, cambiarPassword }),
+    [user, loading, login, logout, cambiarPassword]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

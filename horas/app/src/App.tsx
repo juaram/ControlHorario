@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useAuth } from './auth/AuthContext';
 import Admin from './pages/Admin';
+import ChangePassword from './pages/ChangePassword';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 
@@ -17,6 +18,7 @@ function RutaProtegida({ children, soloAdmin = false }: { children: ReactNode; s
   const { user, loading } = useAuth();
   if (loading) return <PantallaCarga />;
   if (!user) return <Navigate to="/login" replace />;
+  if (user.must_change_password) return <Navigate to="/cambiar-contrasena" replace />;
   if (soloAdmin && user.role !== 'admin') return <Navigate to="/fichar" replace />;
   return <>{children}</>;
 }
@@ -30,8 +32,15 @@ export default function App() {
     <Routes>
       <Route
         path="/login"
-        element={user ? <Navigate to="/fichar" replace /> : <Login />}
+        element={
+          user ? (
+            <Navigate to={user.must_change_password ? '/cambiar-contrasena' : '/fichar'} replace />
+          ) : (
+            <Login />
+          )
+        }
       />
+      <Route path="/cambiar-contrasena" element={<ChangePassword />} />
       <Route
         path="/fichar"
         element={

@@ -14,7 +14,7 @@ require_once __DIR__ . '/../auth.php';
 
 class AdminController
 {
-    private const COLUMNAS_USUARIO = 'id, username, full_name, email, role, active, created_at';
+    private const COLUMNAS_USUARIO = 'id, username, full_name, email, role, active, must_change_password, created_at';
 
     public function getConfig(): void
     {
@@ -109,6 +109,10 @@ class AdminController
         if (array_key_exists('active', $b)) {
             $updates[] = 'active = ?';
             $params[] = $b['active'] ? 1 : 0;
+        }
+        if (array_key_exists('must_change_password', $b)) {
+            $updates[] = 'must_change_password = ?';
+            $params[] = $b['must_change_password'] ? 1 : 0;
         }
         if (!empty($b['password'])) {
             $updates[] = 'password = ?';
