@@ -1,0 +1,11 @@
+# Bloquear el acceso web a la base de datos
+<IfModule mod_authz_core.c>
+  Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+  Order allow,deny
+  Deny from all
+</IfModule>
+
+# Evitar listados si Apache ignora la regla anterior
+Options -Indexes
