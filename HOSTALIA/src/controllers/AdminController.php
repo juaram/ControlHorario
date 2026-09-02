@@ -23,9 +23,11 @@ class AdminController
 
         $lat = setting('trabajo_lat');
         $lon = setting('trabajo_lon');
+        $lugar = setting('trabajo_lugar');
         responder([
             'trabajo_lat'           => ($lat === null || $lat === '') ? null : (float)$lat,
             'trabajo_lon'           => ($lon === null || $lon === '') ? null : (float)$lon,
+            'trabajo_lugar'         => ($lugar === null || $lugar === '') ? null : (string)$lugar,
             'trabajo_radio'         => (int)(setting('trabajo_radio') ?? TRABAJO_RADIO),
             'ubicacion_obligatoria' => (setting('ubicacion_obligatoria') ?? UBICACION_OBLIGATORIA) === '1',
         ]);
@@ -61,6 +63,10 @@ class AdminController
         }
         if ($radio !== null) {
             guardarSetting('trabajo_radio', (string)(int)$radio);
+        }
+        if (array_key_exists('trabajo_lugar', $b)) {
+            $lugar = trim((string)($b['trabajo_lugar'] ?? ''));
+            guardarSetting('trabajo_lugar', $lugar === '' ? null : $lugar);
         }
         if (isset($b['ubicacion_obligatoria'])) {
             guardarSetting('ubicacion_obligatoria', $b['ubicacion_obligatoria'] ? '1' : '0');
@@ -134,6 +140,39 @@ class AdminController
             [$id]
         );
         responder(['message' => 'Usuario actualizado', 'user' => $updated]);
+    }
+
+    public function deleteUser(int $id): void
+    {
+        $admin = autenticar();
+        exigirAdmin($admin);
+
+        $user = dbFetch('SELECT id, role FROM ' . T_USERS . ' WHERE id = ?', [$id]);
+        if (!$user) {
+            responderError('Usuario no encontrado', 404);
+        }
+
+        if ((int)$user['id'] === (int)$admin['id']) {
+            responderError('No puedes eliminar tu propio usuario', 409);
+        }
+        if ($user['role'] === 'admin') {
+            responderError('No se puede eliminar un usuario administrador', 409);
+        }
+
+        $registros = dbFetch(
+            'SELECT COUNT(*) AS total FROM ' . T_CLOCK . ' WHERE user_id = ?',
+            [$id]
+        );
+        $total = (int)$registros['total'];
+        if ($total > 0) {
+            responderError(
+                'No se puede eliminar: el usuario tiene ' . $total . ' registro(s) de fichaje. Bórralos antes en la sección Registros',
+                409
+            );
+        }
+
+        dbRun('DELETE FROM ' . T_USERS . ' WHERE id = ?', [$id]);
+        responder(['message' => 'Usuario eliminado']);
     }
 
     public function records(): void
@@ -238,6 +277,20 @@ class AdminController
 
         $updated = dbFetch('SELECT * FROM ' . T_CLOCK . ' WHERE id = ?', [$id]);
         responder(['message' => 'Registro actualizado', 'record' => $updated]);
+    }
+
+    public function deleteRecord(int $id): void
+    {
+        $admin = autenticar();
+        exigirAdmin($admin);
+
+        $record = dbFetch('SELECT id FROM ' . T_CLOCK . ' WHERE id = ?', [$id]);
+        if (!$record) {
+            responderError('Registro no encontrado', 404);
+        }
+
+        dbRun('DELETE FROM ' . T_CLOCK . ' WHERE id = ?', [$id]);
+        responder(['message' => 'Registro eliminado']);
     }
 
     private function minutos(string $inicio, string $fin): int

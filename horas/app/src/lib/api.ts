@@ -119,9 +119,14 @@ class ApiClient {
     // POST (no PUT): los hostings compartidos rechazan PUT en scripts PHP (405)
     updateUser: (id: number, d: Record<string, unknown>) =>
       this.post<{ message: string; user: Usuario }>(`/admin/users/${id}`, d),
+    // POST (no DELETE): los hostings compartidos rechazan DELETE en scripts PHP (405)
+    deleteUser: (id: number) => this.post<{ message: string }>(`/admin/users/${id}/delete`),
     records: (f: Filtros) => this.get<RespuestaHistorial>(`/admin/records${qs(f)}`),
     updateRecord: (id: number, d: Record<string, unknown>) =>
       this.post<{ message: string; record: Registro }>(`/admin/records/${id}`, d),
+    // POST (no DELETE): los hostings compartidos rechazan DELETE en scripts PHP (405)
+    deleteRecord: (id: number) =>
+      this.post<{ message: string }>(`/admin/records/${id}/delete`),
     config: () => this.get<ConfigTrabajo>('/admin/config'),
     saveConfig: (d: ConfigTrabajo) => this.post<{ message: string }>('/admin/config', d),
     stats: () => this.get<Estadisticas>('/admin/stats'),

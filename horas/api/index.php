@@ -66,8 +66,26 @@ if (($method === 'POST' || $method === 'PUT') && preg_match('#^/api/admin/users/
     (new AdminController())->updateUser((int)$m[1]);
     exit;
 }
+// Borrar usuario (solo si no tiene registros): POST para evitar el 405 de Hostalia
+if ($method === 'POST' && preg_match('#^/api/admin/users/(\d+)/delete$#', $path, $m)) {
+    (new AdminController())->deleteUser((int)$m[1]);
+    exit;
+}
+if ($method === 'DELETE' && preg_match('#^/api/admin/users/(\d+)$#', $path, $m)) {
+    (new AdminController())->deleteUser((int)$m[1]);
+    exit;
+}
 if (($method === 'POST' || $method === 'PUT') && preg_match('#^/api/admin/records/(\d+)$#', $path, $m)) {
     (new AdminController())->updateRecord((int)$m[1]);
+    exit;
+}
+// Borrar registro: POST para evitar el 405 que Hostalia da a PUT/DELETE directos
+if ($method === 'POST' && preg_match('#^/api/admin/records/(\d+)/delete$#', $path, $m)) {
+    (new AdminController())->deleteRecord((int)$m[1]);
+    exit;
+}
+if ($method === 'DELETE' && preg_match('#^/api/admin/records/(\d+)$#', $path, $m)) {
+    (new AdminController())->deleteRecord((int)$m[1]);
     exit;
 }
 

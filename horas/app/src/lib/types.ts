@@ -52,6 +52,7 @@ export interface RespuestaHistorial {
 export interface ConfigTrabajo {
   trabajo_lat: number | null;
   trabajo_lon: number | null;
+  trabajo_lugar: string | null;
   trabajo_radio: number;
   ubicacion_obligatoria: boolean;
 }
